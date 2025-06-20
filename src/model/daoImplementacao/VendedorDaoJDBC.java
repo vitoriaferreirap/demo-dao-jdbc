@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +27,37 @@ public class VendedorDaoJDBC implements VendedorDao { // implementa interface ve
 
     @Override
     public void insert(Vendedor vendedor) {
+        PreparedStatement st = null;
+        try {
+            st = conexao.prepareStatement(
+                    "INSERT INTO seller " +
+                            "(Name, Email, BirthDate, BaseSalary, DepartmentId) " +
+                            "VALUES " +
+                            "(?, ?, ?, ?, ?)",
+                    Statement.RETURN_GENERATED_KEYS); // para retornar a chave gerada
 
+            st.setString(1, vendedor.getNome()); // setando o nome do vendedor
+            st.setString(2, vendedor.getEmail()); // setando o email do vendedor
+            st.setDate(3, new java.sql.Date(vendedor.getAniversario().getTime())); // setando a data de aniversário
+            st.setDouble(4, vendedor.getSalario()); // setando o salário do vendedor
+            st.setInt(5, vendedor.getDepartamento().getId()); // setando o departamento do vendedor
+
+            int linhasAfetadas = st.executeUpdate();
+            if (linhasAfetadas > 0) { // se houver linhas afetadas
+                ResultSet rs = st.getGeneratedKeys();
+                if (rs.next()) { // se houver um próximo resultado
+                    int id = rs.getInt(1); // obtém o id gerado
+                    vendedor.setId(id); // setando o id do vendedor
+                }
+                DB.closeResultSet(rs); // fecha o ResultSet
+            } else {
+                throw new DbException("Erro inesperado! Nenhuma linha afetada.");
+            }
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        } finally {
+            DB.closeStatement(st); // fecha o PreparedStatement
+        }
     }
 
     @Override
