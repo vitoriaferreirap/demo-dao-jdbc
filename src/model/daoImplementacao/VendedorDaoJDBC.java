@@ -89,6 +89,19 @@ public class VendedorDaoJDBC implements VendedorDao { // implementa interface ve
 
     @Override
     public void deleteById(Integer id) {
+        PreparedStatement st = null;
+        try {
+            st = conexao.prepareStatement(
+                    "DELETE FROM seller WHERE Id = ?");
+
+            st.setInt(1, id); // setando o id do vendedor a ser deletado
+            st.executeUpdate(); // executa a atualização
+
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        } finally {
+            DB.closeStatement(st); // fecha o PreparedStatement
+        }
 
     }
 

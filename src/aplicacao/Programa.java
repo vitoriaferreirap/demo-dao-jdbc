@@ -2,6 +2,7 @@ package aplicacao;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
 
 import model.dao.DaoFabrica;
 import model.dao.VendedorDao;
@@ -10,7 +11,7 @@ import model.entidades.Vendedor;
 
 public class Programa {
     public static void main(String[] args) {
-
+        Scanner sc = new Scanner(System.in);
         // injecao de dependência - Programa não conhece a implementação do DAO,somente
         // a interface
         VendedorDao vendodorDao = DaoFabrica.criarVendedorDao();
@@ -44,5 +45,13 @@ public class Programa {
         vendodorDao.update(vendedor); // atualiza o vendedor
         System.out.println("Update completo!");
 
+        System.out.println("\n=== TESTE 6: vendedor delete ===");
+        System.out.println("Entre com o id do vendedor a ser deletado: ");
+        int id = sc.nextInt();
+        vendodorDao.deleteById(id); // deleta o vendedor com id 10
+        System.out.println("Delete completo!");
+
+        sc.close();
     }
+
 }
