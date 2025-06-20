@@ -62,6 +62,28 @@ public class VendedorDaoJDBC implements VendedorDao { // implementa interface ve
 
     @Override
     public void update(Vendedor vendedor) {
+        PreparedStatement st = null;
+        try {
+            st = conexao.prepareStatement(
+                    "UPDATE seller " +
+                            "SET Name = ?, Email = ?, BirthDate = ?, BaseSalary = ?, DepartmentId = ? " +
+                            "WHERE Id = ?",
+                    Statement.RETURN_GENERATED_KEYS); // para retornar a chave gerada
+
+            st.setString(1, vendedor.getNome()); // setando o nome do vendedor
+            st.setString(2, vendedor.getEmail()); // setando o email do vendedor
+            st.setDate(3, new java.sql.Date(vendedor.getAniversario().getTime())); // setando a data de aniversário
+            st.setDouble(4, vendedor.getSalario()); // setando o salário do vendedor
+            st.setInt(5, vendedor.getDepartamento().getId()); // setando o departamento do vendedor
+            st.setInt(6, vendedor.getId()); // setando o id do vendedor
+
+            st.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        } finally {
+            DB.closeStatement(st); // fecha o PreparedStatement
+        }
 
     }
 
