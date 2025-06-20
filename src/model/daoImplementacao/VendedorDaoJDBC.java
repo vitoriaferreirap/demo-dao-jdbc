@@ -52,19 +52,11 @@ public class VendedorDaoJDBC implements VendedorDao { // implementa interface ve
 
             // posição 0 do ResultSet é inválida, então é necessário chamar next()
             if (rs.next()) {
-                Departamento dep = new Departamento();
-                dep.setId(rs.getInt("DepartmentId"));// acessando coluna DepartmentId
-                dep.setNome(rs.getString("DepName"));// acessando coluna DepName
-
-                // criando um novo obj vendedor interligado com o departamento
-                Vendedor vendedor = new Vendedor();
-                vendedor.setId(rs.getInt("Id"));// acessando coluna Id
-                vendedor.setNome(rs.getString("Name"));// acessando coluna Name
-                vendedor.setEmail(rs.getString("Email"));// acessando coluna Email
-                vendedor.setSalario(rs.getDouble("BaseSalary"));// acessando coluna BaseSalary
-                vendedor.setAniversario(rs.getDate("BirthDate"));// acessando coluna BirthDate
-
-                vendedor.setDepartamento(dep);// setando o departamento do vendedor
+                // criando um novo obj departamento (AGORA EM UMA FUNÇÃO SEPARADA)
+                Departamento dep = instanciandoDepartamento(rs);
+                // criando um novo obj vendedor interligado com o departamento(AGORA EM UMA
+                // FUNÇÃO SEPARADA)
+                Vendedor vendedor = instanciandoVendedor(rs, dep);
                 return vendedor; // retorna o vendedor com o departamento associado
             }
             return null; // se não encontrar o vendedor, retorna null
@@ -75,6 +67,25 @@ public class VendedorDaoJDBC implements VendedorDao { // implementa interface ve
             DB.closeStatement(st);
             DB.closeResultSet(rs);
         }
+    }
+
+    private Vendedor instanciandoVendedor(ResultSet rs, Departamento dep) throws SQLException {
+        Vendedor vendedor = new Vendedor(); // instanciando um novo vendedor
+        vendedor.setId(rs.getInt("Id"));// acessando coluna Id
+        vendedor.setNome(rs.getString("Name"));// acessando coluna Name
+        vendedor.setEmail(rs.getString("Email"));// acessando coluna Email
+        vendedor.setSalario(rs.getDouble("BaseSalary"));// acessando coluna BaseSalary
+        vendedor.setAniversario(rs.getDate("BirthDate"));// acessando coluna BirthDate
+
+        vendedor.setDepartamento(dep);// setando o departamento do vendedor
+        return vendedor; // retorna o vendedor instanciado
+    }
+
+    private Departamento instanciandoDepartamento(ResultSet rs) throws SQLException { // propagando exceção
+        Departamento dep = new Departamento();
+        dep.setId(rs.getInt("DepartmentId"));// acessando coluna DepartmentId
+        dep.setNome(rs.getString("DepName"));// acessando coluna DepName
+        return dep; // retorna o departamento instanciado
     }
 
     @Override

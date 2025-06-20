@@ -11,6 +11,8 @@ public class Programa {
         // a interface
         VendedorDao vendodorDao = DaoFabrica.criarVendedorDao();
 
+        System.out.println("=== TESTE 1: vendedor findById ===");
+
         Vendedor vendedor = vendodorDao.findById(3); // busca o vendedor com id 3
 
         // Exibição do vendedor
