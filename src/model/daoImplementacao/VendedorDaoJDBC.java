@@ -94,12 +94,46 @@ public class VendedorDaoJDBC implements VendedorDao { // implementa interface ve
     @Override
     public List<Vendedor> findAll() {
 
-        return null;
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        try {
+            st = conexao.prepareStatement(
+                    "SELECT seller.*,department.Name as DepName " +
+                            "FROM seller INNER JOIN department " +
+                            "ON seller.DepartmentId = department.Id " +
+                            "ORDER BY Name ");
+
+            rs = st.executeQuery();// recebe o resultado da consulta
+
+            List<Vendedor> lista = new ArrayList<>();
+            Map<Integer, Departamento> map = new HashMap<>(); // para evitar duplicação de departamentos (vazio)
+
+            // percorre enquando tiver um proximo
+            while (rs.next()) {
+
+                Departamento dep = map.get(map.get(rs.getInt("DepartmentId"))); // busca o departamento no mapa
+
+                if (dep == null) {
+                    dep = instanciandoDepartamento(rs); // se não existir, instancia um novo departamento
+                    map.put(dep.getId(), dep); // adiciona o departamento no map
+                }
+
+                Vendedor vendedor = instanciandoVendedor(rs, dep);
+                lista.add(vendedor); // adiciona o vendedor na lista
+            }
+            return lista; // se não encontrar o vendedor, retorna null
+
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+            DB.closeResultSet(rs);
+        }
     }
 
     @Override
     public List<Vendedor> findByDepartamento(Departamento departamentoId) {
-        List<Vendedor> lista = new ArrayList<>();
+
         PreparedStatement st = null;
         ResultSet rs = null;
         try {
@@ -112,7 +146,7 @@ public class VendedorDaoJDBC implements VendedorDao { // implementa interface ve
 
             st.setInt(1, departamentoId.getId());// recebe id que veio como paramentro na função
             rs = st.executeQuery();// recebe o resultado da consulta
-
+            List<Vendedor> lista = new ArrayList<>();
             Map<Integer, Departamento> map = new HashMap<>(); // para evitar duplicação de departamentos (vazio)
 
             // percorre enquando tiver um proximo
