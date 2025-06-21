@@ -1,6 +1,6 @@
 # Demo DAO JDBC
 
-Este projeto Java utiliza a biblioteca JDBC para conexão com banco de dados MySQL.
+Aprendendo sobre a utilização da  biblioteca JDBC para conexão com banco de dados MySQL.
 
 ## Tecnologias utilizadas
 
