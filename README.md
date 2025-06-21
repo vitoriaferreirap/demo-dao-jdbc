@@ -1,6 +1,6 @@
-# Demo DAO JDBC
+# Aprendizado de JDBC com Java
 
-Aprendendo sobre a utilização da  biblioteca JDBC para conexão com banco de dados MySQL.
+Este repositório é uma demonstração prática de como utilizar **JDBC (Java Database Connectivity)** para realizar operações com um banco de dados MySQL.
 
 ## Tecnologias utilizadas
 
@@ -9,5 +9,10 @@ Aprendendo sobre a utilização da  biblioteca JDBC para conexão com banco de d
 - MySQL
 
 ## Observação
+
+- Conexão com o banco usando `DriverManager`
+- Uso de `PreparedStatement` para evitar SQL Injection
+- Execução de comandos SQL (INSERT, SELECT, UPDATE, DELETE)
+- Organização básica de pacotes Java
 
 Certifique-se de ter o driver JDBC do MySQL (`mysql-connector-j`) configurado no classpath para executar o projeto.
